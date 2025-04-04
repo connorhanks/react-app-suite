@@ -2,8 +2,19 @@ import { useState, useEffect } from 'react';
 
 const TodoList = () => {
   const [value, setValue] = useState<string>('');
-  const [tasks, setTasks] = useState<string[]>([]);
-  const [completedTasks, setCompletedTasks] = useState<string[]>([]);
+  const [tasks, setTasks] = useState<string[]>(() => {
+    const savedTasks = localStorage.getItem('tasks');
+    return savedTasks ? JSON.parse(savedTasks) : [];
+  });
+  const [completedTasks, setCompletedTasks] = useState<string[]>(() => {
+    const savedCompleted = localStorage.getItem('completedTasks');
+    return savedCompleted ? JSON.parse(savedCompleted) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
+  }, [tasks, completedTasks]);
 
   // Log tasks whenever they change, avoids issue where try to log when setTasks hasn't finished yet
   useEffect(() => {
