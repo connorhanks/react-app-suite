@@ -1,11 +1,13 @@
-import { useState } from 'react'
+import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
+import { useEffect } from 'react'
 import TodoList from './components/TodoList'
 import WeatherApp from './components/WeatherApp'
 import './App.css'
 
-function App() {
-  const [activeApp, setActiveApp] = useState<string>('todo');
-
+function AppContent() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
   // Array of micro-apps for dashboard
   const microApps = [
     { id: 'todo', name: 'Todo List', emoji: '📝', color: 'bg-gradient-to-r from-orange-400 to-orange-600', disabled: false },
@@ -16,30 +18,17 @@ function App() {
     { id: 'gallery', name: 'Photo Gallery', emoji: '🖼️', color: 'bg-gradient-to-r from-yellow-400 to-amber-600', disabled: true }
   ];
 
-  // Render the active micro app based on selection
-  const renderActiveApp = () => {
-    switch(activeApp) {
-      case 'todo':
-        return <TodoList />;
-      case 'weather':
-        return <WeatherApp />;
-        // Not being used rn bc btns are disabled 
-      case 'notes':
-        return <div className="p-6 text-center text-gray-500">Notes Placeholder 📓</div>;
-      case 'pomodoro':
-        return <div className="p-6 text-center text-gray-500">Pomodoro Placeholder ⏱️</div>;
-      case 'calculator':
-        return <div className="p-6 text-center text-gray-500">Calculator Placeholder 🧮</div>;
-      case 'gallery':
-        return <div className="p-6 text-center text-gray-500">Gallery Placeholder 🖼️</div>;
-      default:
-        return <TodoList />;
-    }
-  };
+  // Get the current active app from the URL
+  const activeApp = location.pathname.slice(1) || 'todo';
+
+  // Update the page title when the route changes
+  useEffect(() => {
+    const currentApp = microApps.find(app => app.id === activeApp);
+    document.title = currentApp ? `${currentApp.name} | App Collection` : 'App Collection';
+  }, [activeApp]);
 
   return (
     <div className={`min-h-screen transition-all duration-500 ${microApps.find(app => app.id === activeApp)?.color.replace('to-r', 'to-b').replace('from-orange-400', 'from-orange-50').replace('from-blue-400', 'from-blue-50').replace('from-red-400', 'from-red-50').replace('from-green-400', 'from-green-50').replace('from-purple-400', 'from-purple-50').replace('from-yellow-400', 'from-yellow-50').replace('to-orange-600', 'to-orange-100').replace('to-indigo-600', 'to-indigo-100').replace('to-pink-600', 'to-pink-100').replace('to-teal-600', 'to-teal-100').replace('to-purple-600', 'to-purple-100').replace('to-amber-600', 'to-amber-100')}`}>
-      
       <div className="max-w-6xl mx-auto px-4 py-8">
         <h1 className="text-4xl font-bold text-center text-gray-800 mb-2">App Collection</h1>
         <p className="text-center text-gray-600 mb-8">A collection of my micro-apps, built to learn React</p>
@@ -49,7 +38,7 @@ function App() {
           {microApps.map(app => (
             <button
               key={app.id}
-              onClick={() => !app.disabled && setActiveApp(app.id)}
+              onClick={() => !app.disabled && navigate(`/${app.id}`)}
               disabled={app.disabled}
               className={`${app.disabled 
                 ? 'bg-gray-300 cursor-not-allowed opacity-50' 
@@ -76,12 +65,7 @@ function App() {
               <div className="w-3 h-3 rounded-full bg-green-400"></div>
             </div>
             <div className="text-center flex-1 font-medium text-gray-600 pr-10">
-              {activeApp === 'todo' && 'Todo List'}
-              {activeApp === 'weather' && 'Weather App'}
-              {activeApp === 'pomodoro' && 'Pomodoro Timer'}
-              {activeApp === 'notes' && 'Notes App'}
-              {activeApp === 'calculator' && 'Calculator'}
-              {activeApp === 'gallery' && 'Photo Gallery'}
+              {microApps.find(app => app.id === activeApp)?.name || 'Todo List'}
             </div>
           </div>
           
@@ -90,12 +74,28 @@ function App() {
           
           {/* Content container */}
           <div className="relative z-10">
-            {renderActiveApp()}
+            <Routes>
+              <Route path="/todo" element={<TodoList />} />
+              <Route path="/weather" element={<WeatherApp />} />
+              <Route path="/notes" element={<div className="p-6 text-center text-gray-500">Notes Placeholder 📓</div>} />
+              <Route path="/pomodoro" element={<div className="p-6 text-center text-gray-500">Pomodoro Placeholder ⏱️</div>} />
+              <Route path="/calculator" element={<div className="p-6 text-center text-gray-500">Calculator Placeholder 🧮</div>} />
+              <Route path="/gallery" element={<div className="p-6 text-center text-gray-500">Gallery Placeholder 🖼️</div>} />
+              <Route path="/" element={<TodoList />} />
+            </Routes>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
+  );
 }
 
 export default App
