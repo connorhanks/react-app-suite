@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
-import TodoList from './components/TodoList'
+import TodoApp from './components/TodoApp'
 import WeatherApp from './components/WeatherApp'
 import { WeatherProvider } from './context/WeatherContext'
 import './App.css'
@@ -76,7 +76,7 @@ function AppContent() {
           {/* Content container */}
           <div className="relative z-10">
             <Routes>
-              <Route path="/todo" element={<TodoList />} />
+              <Route path="/todo" element={<TodoApp />} />
               <Route path="/weather" element={
                 <WeatherProvider>
                   <WeatherApp />
@@ -86,7 +86,7 @@ function AppContent() {
               <Route path="/pomodoro" element={<div className="p-6 text-center text-gray-500">Pomodoro Placeholder ⏱️</div>} />
               <Route path="/calculator" element={<div className="p-6 text-center text-gray-500">Calculator Placeholder 🧮</div>} />
               <Route path="/gallery" element={<div className="p-6 text-center text-gray-500">Gallery Placeholder 🖼️</div>} />
-              <Route path="/" element={<TodoList />} />
+              <Route path="/" element={<TodoApp />} />
             </Routes>
           </div>
         </div>
