@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-ro
 import { useEffect } from 'react'
 import TodoList from './components/TodoList'
 import WeatherApp from './components/WeatherApp'
+import { WeatherProvider } from './context/WeatherContext'
 import './App.css'
 
 function AppContent() {
@@ -76,7 +77,11 @@ function AppContent() {
           <div className="relative z-10">
             <Routes>
               <Route path="/todo" element={<TodoList />} />
-              <Route path="/weather" element={<WeatherApp />} />
+              <Route path="/weather" element={
+                <WeatherProvider>
+                  <WeatherApp />
+                </WeatherProvider>
+              } />
               <Route path="/notes" element={<div className="p-6 text-center text-gray-500">Notes Placeholder 📓</div>} />
               <Route path="/pomodoro" element={<div className="p-6 text-center text-gray-500">Pomodoro Placeholder ⏱️</div>} />
               <Route path="/calculator" element={<div className="p-6 text-center text-gray-500">Calculator Placeholder 🧮</div>} />
